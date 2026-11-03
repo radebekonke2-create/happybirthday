@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Sisanda | From Konke</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#07080c',
+              dark: '#0c0f18',
+              card: '#121726',
+              royal: '#2563eb',
+              electric: '#3b82f6',
+              glow: '#60a5fa',
+              cyan: '#22d3ee'
+            }
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #07080c;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Velvet backdrop gradient */
+    .velvet-gradient {
+      background: radial-gradient(circle at 50% 20%, #1e3a8a 0%, #0c0f18 55%, #07080c 100%);
+    }
+
+    /* Glowing border accents */
+    .glow-border {
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+    }
+    
+    .glow-border:hover {
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.45), inset 0 0 20px rgba(59, 130, 246, 0.25);
+      border-color: rgba(96, 165, 250, 0.6);
+    }
+
+    /* Custom 3D Flip Cards */
+    .flip-card {
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-card-inner, .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Wax Seal Stamp */
+    .wax-seal {
+      background: radial-gradient(circle at 30% 30%, #3b82f6, #1d4ed8, #0f172a);
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+    }
+
+    /* Candle Flame Animation */
+    .flame {
+      width: 16px;
+      height: 26px;
+      background: linear-gradient(to top, #ff4500, #ffa500, #00f0ff);
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 20px #3b82f6, 0 0 40px #60a5fa, 0 0 60px #ffaa00;
+      animation: flicker 1.2s infinite alternate ease-in-out;
+      transform-origin: center bottom;
+    }
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+      50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+      100% { transform: scale(0.95) rotate(-1deg); opacity: 0.9; }
+    }
+    .flame.out {
+      animation: fadeOutSmoke 1s forwards ease-out;
+    }
+    @keyframes fadeOutSmoke {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.3) translateY(-10px); opacity: 0.5; filter: blur(2px); }
+      100% { transform: scale(0) translateY(-30px); opacity: 0; filter: blur(6px); }
+    }
+
+    /* Floating Butterfly Canvas Overlay */
+    #butterflyCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="velvet-gradient min-h-screen text-slate-100 flex flex-col justify-between selection:bg-brand-royal selection:text-white">
+
+  <!-- Floating Cyan Butterfly Canvas Background -->
+  <canvas id="butterflyCanvas"></canvas>
+
+  <!-- Navigation / Header Bar -->
+  <header class="w-full max-w-7xl mx-auto px-6 py-8 flex justify-between items-center relative z-20">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-brand-royal/20 border border-brand-glow flex items-center justify-center shadow-lg shadow-brand-royal/30">
+        <i class="fa-solid fa-heart text-brand-cyan text-sm animate-pulse"></i>
+      </div>
+      <span class="font-cinzel font-bold text-xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-white">
+        SISANDA
+      </span>
+    </div>
+
+    <!-- Audio Player Toggle -->
+    <button id="musicToggleBtn" onclick="toggleAudio()" class="px-4 py-2 rounded-full bg-brand-card/80 border border-brand-royal/40 hover:border-brand-glow transition-all flex items-center space-x-3 text-xs tracking-wider uppercase backdrop-blur-md shadow-lg shadow-black/50">
+      <i id="musicIcon" class="fa-solid fa-music text-brand-cyan"></i>
+      <span id="musicText">Play Atmosphere</span>
+      <div id="soundBars" class="hidden flex items-end space-x-1 h-3">
+        <span class="w-0.5 bg-brand-cyan h-2 animate-bounce"></span>
+        <span class="w-0.5 bg-brand-glow h-3 animate-bounce" style="animation-delay: 0.2s"></span>
+        <span class="w-0.5 bg-brand-cyan h-1 animate-bounce" style="animation-delay: 0.4s"></span>
+      </div>
+    </button>
+  </header>
+
+  <main class="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 space-y-24 my-8">
+
+    <!-- HERO SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-6">
+      
+      <!-- Text & Greetings Left Column -->
+      <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-brand-royal/10 border border-brand-royal/30 text-brand-cyan text-xs tracking-widest uppercase font-medium">
+          <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
+          <span>A Royal Birthday Celebration</span>
+        </div>
+
+        <h1 class="font-cinzel text-4xl sm:text-6xl xl:text-7xl font-bold leading-tight tracking-tight text-white">
+          Happy Birthday, <br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 drop-shadow-sm">
+            My Queen Sisanda
+          </span>
+        </h1>
+
+        <p class="font-serif italic text-lg sm:text-xl text-slate-300 font-light leading-relaxed max-w-2xl mx-auto lg:mx-0">
+          "In a broken world a minute with you is all i need to forget it all. Today is a celebration of your beauty, your soul, and every breathtaking second spent together."
+        </p>
+
+        <!-- Timer Counter from Feb 12, 2026 at 3:57 PM -->
+        <div class="pt-4">
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-3">
+            <i class="fa-solid fa-clock-rotate-left text-brand-cyan mr-1.5"></i> Time Spent Loving You (Since Feb 12, 2026 at 3:57 PM)
+          </p>
+          <div class="grid grid-cols-4 gap-3 max-w-md mx-auto lg:mx-0 text-center">
+            <div class="bg-brand-card/90 border border-brand-royal/30 rounded-2xl p-3 shadow-lg">
+              <span id="timerDays" class="block font-cinzel text-2xl sm:text-3xl font-bold text-brand-cyan">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400">Days</span>
+            </div>
+            <div class="bg-brand-card/90 border border-brand-royal/30 rounded-2xl p-3 shadow-lg">
+              <span id="timerHours" class="block font-cinzel text-2xl sm:text-3xl font-bold text-brand-glow">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400">Hours</span>
+            </div>
+            <div class="bg-brand-card/90 border border-brand-royal/30 rounded-2xl p-3 shadow-lg">
+              <span id="timerMinutes" class="block font-cinzel text-2xl sm:text-3xl font-bold text-brand-cyan">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400">Mins</span>
+            </div>
+            <div class="bg-brand-card/90 border border-brand-royal/30 rounded-2xl p-3 shadow-lg">
+              <span id="timerSeconds" class="block font-cinzel text-2xl sm:text-3xl font-bold text-white">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400">Secs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start">
+          <button onclick="openLetterModal()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-royal to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold text-sm tracking-wide shadow-lg shadow-brand-royal/40 hover:shadow-brand-royal/70 transition-all transform hover:-translate-y-0.5 flex items-center space-x-3">
+            <i class="fa-solid fa-envelope-open-text text-base"></i>
+            <span>Read Letter from Konke</span>
+          </button>
+
+          <a href="#wishSection" class="px-8 py-4 rounded-xl bg-brand-card border border-brand-royal/40 hover:border-brand-cyan text-slate-200 font-medium text-sm tracking-wide transition-all hover:bg-brand-card/80 flex items-center space-x-2">
+            <i class="fa-solid fa-cake-candles text-amber-400"></i>
+            <span>Make a Birthday Wish</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Video & Artwork Display Column -->
+      <div class="lg:col-span-5 flex flex-col items-center space-y-6">
+        
+        <!-- Looping Video Frame Container -->
+        <div class="relative group max-w-sm w-full">
+          <div class="absolute -inset-1 bg-gradient-to-r from-brand-royal via-cyan-400 to-blue-600 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition duration-1000"></div>
+          
+          <div class="relative rounded-3xl bg-brand-dark p-3 glow-border overflow-hidden">
+            <div class="relative aspect-[9/16] rounded-2xl overflow-hidden bg-black/80 flex items-center justify-center">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                <source src="sisanda_video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              
+              <!-- Dark gradient overlay at bottom -->
+              <div class="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent opacity-80 pointer-events-none"></div>
+
+              <!-- Overlay Card Label -->
+              <div class="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-brand-dark/80 backdrop-blur-md border border-brand-royal/30">
+                <p class="font-cinzel text-xs text-cyan-300 font-bold tracking-widest uppercase">Sisanda & Konke</p>
+                <p class="text-[11px] text-slate-300 italic font-serif">"mine."</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Image Display Box -->
+        <div class="relative max-w-sm w-full rounded-2xl bg-brand-card p-2 border border-brand-royal/30 flex items-center space-x-3">
+          <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-black">
+            <img 
+              src="1793496270188.png" 
+              alt="Sisanda Velvet Frame" 
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null; this.src='https://placehold.co/100x100/0c0f18/22d3ee?text=SISANDA';" />
+          </div>
+          <div class="pr-2">
+            <h4 class="font-cinzel font-bold text-xs text-white uppercase tracking-wider">Royal Blue & Velvet</h4>
+            <p class="text-[11px] text-slate-400 font-serif italic">Created specifically for Sisanda</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECTION: PHOTO GALLERY GRID (PHOTO 1, 2, and 3) -->
+    <section class="space-y-8 pt-6">
+      <div class="text-center space-y-2">
+        <span class="text-xs uppercase tracking-widest text-brand-cyan font-semibold">Memories & Moments</span>
+        <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-white">The Gallery of My Queen</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto">A collection of captured moments, smiles, and beautiful memories.</p>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Sisanda Photo 1 -->
+        <div class="group relative rounded-2xl overflow-hidden bg-brand-card glow-border aspect-[4/5]">
+          <img src="photo1.jpg" alt="Sisanda Photo 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x500/0c0f18/22d3ee?text=Sisanda+Photo+1';" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+            <p class="font-serif italic text-sm text-slate-200">"Your smile lights up my whole world."</p>
+          </div>
+        </div>
+
+        <!-- Sisanda Photo 2 -->
+        <div class="group relative rounded-2xl overflow-hidden bg-brand-card glow-border aspect-[4/5]">
+          <img src="photo2.jpg" alt="Sisanda Photo 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x500/0c0f18/22d3ee?text=Sisanda+Photo+2';" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+            <p class="font-serif italic text-sm text-slate-200">"Unstoppable grace and beauty."</p>
+          </div>
+        </div>
+
+        <!-- Sisanda Photo 3 -->
+        <div class="group relative rounded-2xl overflow-hidden bg-brand-card glow-border aspect-[4/5]">
+          <img src="photo3.jpg" alt="Sisanda Photo 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x500/0c0f18/22d3ee?text=Sisanda+Photo+3';" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+            <p class="font-serif italic text-sm text-slate-200">"My favorite person, always."</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: REASONS WHY I LOVE YOU (3D FLIP CARDS) -->
+    <section class="space-y-10 pt-10">
+      <div class="text-center space-y-3">
+        <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-white">Why You Are My Everything</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto">Click any of the royal cards below to unveil a secret heartfelt reason why I love you.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="flip-card h-64 cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner w-full h-full relative rounded-2xl glow-border">
+            <!-- Front -->
+            <div class="flip-card-front absolute inset-0 bg-brand-card p-6 rounded-2xl flex flex-col justify-between items-center text-center">
+              <div class="w-12 h-12 rounded-full bg-brand-royal/20 flex items-center justify-center text-brand-cyan text-xl border border-brand-royal/40">
+                <i class="fa-solid fa-gem"></i>
+              </div>
+              <div>
+                <h3 class="font-cinzel text-lg font-bold text-white tracking-wider">The Real You</h3>
+                <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Touch to Reveal</p>
+              </div>
+              <i class="fa-solid fa-rotate text-slate-500 text-xs"></i>
+            </div>
+            <!-- Back -->
+            <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-brand-royal/90 to-brand-dark p-6 rounded-2xl flex flex-col justify-center items-center text-center border border-brand-glow">
+              <p class="font-serif italic text-slate-100 text-sm leading-relaxed">
+                "The way you are so real with me without faking any moment, emotion and feelings towards me."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flip-card h-64 cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner w-full h-full relative rounded-2xl glow-border">
+            <!-- Front -->
+            <div class="flip-card-front absolute inset-0 bg-brand-card p-6 rounded-2xl flex flex-col justify-between items-center text-center">
+              <div class="w-12 h-12 rounded-full bg-brand-royal/20 flex items-center justify-center text-brand-cyan text-xl border border-brand-royal/40">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+              <div>
+                <h3 class="font-cinzel text-lg font-bold text-white tracking-wider">Your Kind Heart</h3>
+                <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Touch to Reveal</p>
+              </div>
+              <i class="fa-solid fa-rotate text-slate-500 text-xs"></i>
+            </div>
+            <!-- Back -->
+            <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-brand-royal/90 to-brand-dark p-6 rounded-2xl flex flex-col justify-center items-center text-center border border-brand-glow">
+              <p class="font-serif italic text-slate-100 text-sm leading-relaxed">
+                "Your warmth, your patience, and your unconditional care are the greatest gifts I have ever known. With a topping of ubuhle bendalo. Thank you for loving me."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flip-card h-64 cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner w-full h-full relative rounded-2xl glow-border">
+            <!-- Front -->
+            <div class="flip-card-front absolute inset-0 bg-brand-card p-6 rounded-2xl flex flex-col justify-between items-center text-center">
+              <div class="w-12 h-12 rounded-full bg-brand-royal/20 flex items-center justify-center text-brand-cyan text-xl border border-brand-royal/40">
+                <i class="fa-solid fa-infinity"></i>
+              </div>
+              <div>
+                <h3 class="font-cinzel text-lg font-bold text-white tracking-wider">Our Future</h3>
+                <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Touch to Reveal</p>
+              </div>
+              <i class="fa-solid fa-rotate text-slate-500 text-xs"></i>
+            </div>
+            <!-- Back -->
+            <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-brand-royal/90 to-brand-dark p-6 rounded-2xl flex flex-col justify-center items-center text-center border border-brand-glow">
+              <p class="font-serif italic text-slate-100 text-sm leading-relaxed">
+                "Since February 12, 2026, every day with you has felt like a dream. Here's to a lifetime of laughter, joy, and endless adventures together. Mina i've found the mother of my kids."
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: INTERACTIVE WISH CANDLE -->
+    <section id="wishSection" class="relative bg-brand-card/60 backdrop-blur-md rounded-3xl p-8 sm:p-12 glow-border text-center space-y-8 overflow-hidden">
+      <div class="space-y-3">
+        <span class="text-xs uppercase tracking-widest text-brand-cyan font-semibold">Make A Wish</span>
+        <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-white">Blow Out Your Birthday Candle</h2>
+        <p class="text-slate-300 text-sm max-w-lg mx-auto">Close your eyes, hold a special birthday wish in your heart, and tap the candle below to blow out the flame!</p>
+      </div>
+
+      <!-- Candle Interactive Element -->
+      <div class="py-6 flex flex-col items-center justify-center cursor-pointer group" onclick="blowCandle()">
+        <div class="relative flex flex-col items-center">
+          <!-- Flame -->
+          <div id="candleFlame" class="flame mb-1 transition-all"></div>
+          <!-- Wick -->
+          <div class="w-1 h-4 bg-slate-600 rounded-t"></div>
+          <!-- Candle Body -->
+          <div class="w-12 h-36 bg-gradient-to-b from-blue-400 via-brand-royal to-blue-900 rounded-t-sm rounded-b-md shadow-2xl relative overflow-hidden border-t border-cyan-300/40">
+            <!-- Decorative Velvet Patterns -->
+            <div class="absolute inset-0 bg-white/5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:8px_8px]"></div>
+          </div>
+          <!-- Candle Stand Base -->
+          <div class="w-24 h-4 bg-gradient-to-r from-slate-800 via-brand-royal to-slate-800 rounded-full border border-brand-glow/40 shadow-xl"></div>
+        </div>
+        <p id="candleInstruction" class="text-xs text-brand-cyan mt-6 uppercase tracking-widest font-semibold group-hover:text-white transition-colors">
+          <i class="fa-solid fa-wind mr-1"></i> Tap Candle To Blow Flame
+        </p>
+      </div>
+
+      <!-- Wish Result Container -->
+      <div id="wishConfirmation" class="hidden p-6 rounded-2xl bg-brand-dark/90 border border-brand-cyan/50 max-w-md mx-auto animate-fade-in space-y-2">
+        <p class="font-cinzel font-bold text-brand-cyan text-lg">✨ Your Wish Has Been Sealed ✨</p>
+        <p class="font-serif italic text-slate-300 text-sm">May all your dreams come true, my love. Happy Birthday!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- WAX SEAL LETTER MODAL OVERLAY -->
+  <div id="letterModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-500">
+    <div class="relative w-full max-w-2xl bg-brand-dark border border-brand-royal/50 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-left max-h-[90vh] overflow-y-auto">
+      
+      <!-- Close Button -->
+      <button onclick="closeLetterModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- Envelope / Header Seal -->
+      <div class="flex items-center space-x-4 border-b border-brand-royal/30 pb-6">
+        <div class="wax-seal w-14 h-14 rounded-full flex items-center justify-center text-white font-cinzel font-bold text-xl tracking-tighter">
+          K
+        </div>
+        <div>
+          <h3 class="font-cinzel font-bold text-xl text-white">To My Beloved Sisanda</h3>
+          <p class="text-xs text-brand-cyan uppercase tracking-wider">A Confidential Love Letter • From Konke</p>
+        </div>
+      </div>
+
+      <!-- Letter Content Body -->
+      <div class="space-y-4 font-serif text-slate-200 leading-relaxed text-base sm:text-lg">
+        <p>My Dearest Sisanda,</p>
+        <p>
+          Happy Birthday, my love. Today is entirely about you—the incredible woman you are, the joy you radiate, and the soft, beautiful light you bring into my world.
+        </p>
+        <p>
+          Ever since we started our journey together on <strong class="text-brand-cyan font-sans text-sm">February 12, 2026</strong>, my heart has felt anchored in a way I never thought possible. Loving you is effortless, natural, and the absolute highlight of my life.
+        </p>
+        <p>
+          I hope today reminds you of how deeply cherished you are. You deserve all the happiness, luxury, peace, and warmth this world has to offer.
+        </p>
+        <p>
+          Uyazi sithandwa ami angikho mkhulu emagameni yingakho ngazalwa ngimfishane bengifuna ukusho ukuthi ngyakuthanda Phakathwayo wami.
+        </p>
+        <p class="pt-4 font-cinzel text-brand-cyan font-semibold text-right">
+          Forever Yours,<br/>
+          <span class="text-xl text-white font-bold">Konke ❤️</span>
+        </p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-4 border-t border-brand-royal/20 text-center">
+        <button onclick="closeLetterModal()" class="px-6 py-2.5 rounded-xl bg-brand-royal/30 border border-brand-royal hover:bg-brand-royal/50 text-white text-xs uppercase tracking-widest font-semibold transition-all">
+          Close Letter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Element (Ambient Music Track) -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- FOOTER -->
+  <footer class="w-full text-center py-8 border-t border-brand-royal/20 relative z-20 text-xs text-slate-500">
+    <p class="font-cinzel tracking-widest">Designed With Endless Love For Sisanda • By Konke</p>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    /* =========================================
+       1. COUNTDOWN TIMER (EXACTLY 3:57 PM ON FEB 12, 2026)
+    ========================================= */
+    const startDate = new Date('2026-02-12T15:57:00');
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / 1000 / 60) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        document.getElementById('timerDays').innerText = String(days).padStart(2, '0');
+        document.getElementById('timerHours').innerText = String(hours).padStart(2, '0');
+        document.getElementById('timerMinutes').innerText = String(minutes).padStart(2, '0');
+        document.getElementById('timerSeconds').innerText = String(seconds).padStart(2, '0');
+      }
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    /* =========================================
+       2. LETTER MODAL CONTROLS
+    ========================================= */
+    function openLetterModal() {
+      const modal = document.getElementById('letterModal');
+      modal.classList.remove('pointer-events-none');
+      modal.classList.remove('opacity-0');
+      modal.classList.add('opacity-100');
+    }
+
+    function closeLetterModal() {
+      const modal = document.getElementById('letterModal');
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0');
+      modal.classList.add('pointer-events-none');
+    }
+
+    /* =========================================
+       3. CANDLE INTERACTION & CONFETTI
+    ========================================= */
+    let candleBlown = false;
+    function blowCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+
+      const flame = document.getElementById('candleFlame');
+      const instruction = document.getElementById('candleInstruction');
+      const confirmation = document.getElementById('wishConfirmation');
+
+      flame.classList.add('out');
+      instruction.classList.add('hidden');
+      confirmation.classList.remove('hidden');
+
+      // Trigger royal blue and cyan confetti celebration
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#2563eb', '#3b82f6', '#22d3ee', '#ffffff', '#fbbf24']
+        });
+      }
+    }
+
+    /* =========================================
+       4. ATMOSPHERE AUDIO PLAYER
+    ========================================= */
+    let isPlaying = false;
+    function toggleAudio() {
+      const audio = document.getElementById('bgAudio');
+      const musicText = document.getElementById('musicText');
+      const soundBars = document.getElementById('soundBars');
+      const musicIcon = document.getElementById('musicIcon');
+
+      if (!isPlaying) {
+        audio.play().then(() => {
+          isPlaying = true;
+          musicText.innerText = "Playing";
+          soundBars.classList.remove('hidden');
+          musicIcon.classList.add('text-brand-cyan');
+        }).catch(err => {
+          console.log("Audio play blocked by browser interaction policy.", err);
+        });
+      } else {
+        audio.pause();
+        isPlaying = false;
+        musicText.innerText = "Play Atmosphere";
+        soundBars.classList.add('hidden');
+      }
+    }
+
+    /* =========================================
+       5. FLOATING BUTTERFLY CANVAS SIMULATION
+    ========================================= */
+    const canvas = document.getElementById('butterflyCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Butterfly {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + Math.random() * 100;
+        this.size = Math.random() * 12 + 10;
+        this.speedY = Math.random() * 1.2 + 0.6;
+        this.speedX = Math.sin(Math.random() * Math.PI) * 0.8;
+        this.wingAngle = 0;
+        this.wingSpeed = Math.random() * 0.15 + 0.1;
+        this.opacity = Math.random() * 0.6 + 0.3;
+        this.hue = Math.random() * 30 + 190; // Royal cyan to blue hues
+      }
+
+      update() {
+        this.y -= this.speedY;
+        this.x += Math.sin(this.y * 0.02) * 0.8;
+        this.wingAngle += this.wingSpeed;
+
+        if (this.y < -50) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.globalAlpha = this.opacity;
+
+        const wingScale = Math.abs(Math.sin(this.wingAngle));
+
+        // Draw Left Wing
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${this.hue}, 85%, 60%, 0.8)`;
+        ctx.ellipse(-this.size * wingScale * 0.6, 0, this.size * wingScale, this.size * 0.6, Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw Right Wing
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${this.hue}, 90%, 50%, 0.8)`;
+        ctx.ellipse(this.size * wingScale * 0.6, 0, this.size * wingScale, this.size * 0.6, -Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glowing core
+        ctx.beginPath();
+        ctx.fillStyle = '#ffffff';
+        ctx.arc(0, 0, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    const butterflies = Array.from({ length: 22 }, () => new Butterfly());
+
+    function animateButterflies() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      butterflies.forEach(b => {
+        b.update();
+        b.draw();
+      });
+      requestAnimationFrame(animateButterflies);
+    }
+    animateButterflies();
+  </script>
+</body>
+</html>
